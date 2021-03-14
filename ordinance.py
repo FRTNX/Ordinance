@@ -1,14 +1,10 @@
 import os
 import eyed3
 
-def sort_music_in_cwd():
-    files = os.listdir()
-    music_files = [file for file in files if file.endswith('.mp3')]
-    print(f'Found songs: {music_files}')
 
+def get_music_metadata(music_file_paths):
     music_metadata = []
-
-    for song in music_files:
+    for song in music_file_paths:
         try:
             audiofile = eyed3.load(song)                          
             if audiofile:                                                        
@@ -22,7 +18,11 @@ def sort_music_in_cwd():
         except Exception as e:
             print(e)
             pass
+    
+    return music_metadata
 
+
+def sort_music_by_metadata(music_metadata):
     for track in music_metadata:
         try:
             if track['artist'] != None and track['album'] != None:
@@ -50,6 +50,13 @@ def sort_music_in_cwd():
             pass
 
 
+def sort_music_in_cwd():
+    files = os.listdir()
+    music_files = [file for file in files if file.endswith('.mp3')]
+    music_metadata = get_music_metadata(music_files)
+
+    return sort_music_by_metadata(music_metadata)
+
+
 if __name__ == '__main__':
     sort_music_in_cwd()
-
